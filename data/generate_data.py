@@ -40,11 +40,13 @@ def generate_mock_data(
         user = User(
             username=fake.user_name(),
             email=fake.email(),
-            password_hash="hashed_password",  # Placeholder for hashing demo
-            salt="salt",
             role=random.choice(["admin", "operator", "user"]),
             phone=fake.phone_number(),
+            password_hash="",  # Will be set by set_password
+            salt="",
         )
+        # Use bcrypt to hash password
+        user.set_password("demo123")  # Default demo password
         users.append(user)
     db.session.add_all(users)
     db.session.commit()  # Commit users to get their IDs
