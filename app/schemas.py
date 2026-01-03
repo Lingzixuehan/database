@@ -15,7 +15,7 @@ class EventCreateSchema(Schema):
     position = fields.String(allow_none=True, validate=validate.Length(max=100))
     timestamp = fields.DateTime(allow_none=True)
     status = fields.String(
-        missing='active',
+        load_default='active',
         validate=validate.OneOf(['active', 'resolved', 'cancelled'])
     )
     severity = fields.Integer(
@@ -41,11 +41,11 @@ class TrafficQuerySchema(Schema):
 class PaginationSchema(Schema):
     """Schema for pagination parameters."""
     limit = fields.Integer(
-        missing=10,
+        load_default=10,
         validate=validate.Range(min=1, max=100)
     )
     page = fields.Integer(
-        missing=1,
+        load_default=1,
         validate=validate.Range(min=1)
     )
     offset = fields.Integer(
@@ -57,7 +57,7 @@ class PaginationSchema(Schema):
 class EventFilterSchema(PaginationSchema):
     """Schema for event filtering."""
     status = fields.String(
-        missing='active',
+        load_default='active',
         validate=validate.OneOf(['active', 'resolved', 'cancelled', 'all'])
     )
     severity = fields.Integer(
@@ -69,7 +69,7 @@ class EventFilterSchema(PaginationSchema):
 class ExportFormatSchema(Schema):
     """Schema for data export requests."""
     format = fields.String(
-        missing='csv',
+        load_default='csv',
         validate=validate.OneOf(['csv', 'excel', 'json'])
     )
     start_date = fields.Date(allow_none=True)
