@@ -12,7 +12,7 @@
 \usepackage{fancyhdr}
 \usepackage{float}
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric, arrows, positioning, er}
+\usetikzlibrary{shapes.geometric, arrows, positioning, er, calc}
 
 \geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 
@@ -27,7 +27,24 @@
     frame=single,
     numbers=left,
     numberstyle=\tiny\color{gray},
-    language=Python
+    language=Python,
+    escapeinside={(*@}{@*)}
+}
+
+% 定义JavaScript语言
+\lstdefinelanguage{JavaScript}{
+  keywords={const, let, var, function, return, if, else, for, while, break, continue, switch, case, default, new, this, typeof, instanceof},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywords={class, export, boolean, throw, implements, import, true, false, null, undefined},
+  ndkeywordstyle=\color{blue}\bfseries,
+  identifierstyle=\color{black},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{gray}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  morestring=[b]',
+  morestring=[b]"
 }
 
 % 页眉页脚设置
@@ -1082,7 +1099,7 @@ server {
 
 创建Dockerfile：
 
-\begin{lstlisting}[language=Docker, caption=Dockerfile]
+\begin{lstlisting}[caption=Dockerfile]
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -1242,7 +1259,7 @@ LOG_FILE=app.log
 \textbf{请求参数：} 无
 
 \textbf{响应示例：}
-\begin{lstlisting}[language=json]
+\begin{lstlisting}
 [
   {
     "id": 1,
@@ -1262,7 +1279,7 @@ LOG_FILE=app.log
 \textbf{功能说明：} 创建新的交通事件
 
 \textbf{请求参数：}
-\begin{lstlisting}[language=json]
+\begin{lstlisting}
 {
   "road_id": 1,
   "type": "Accident",
@@ -1273,7 +1290,7 @@ LOG_FILE=app.log
 \end{lstlisting}
 
 \textbf{响应示例：}
-\begin{lstlisting}[language=json]
+\begin{lstlisting}
 {
   "id": 101,
   "road_id": 1,
