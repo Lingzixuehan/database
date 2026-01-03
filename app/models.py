@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import bcrypt
 
 from . import db
 
@@ -7,7 +8,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    salt = db.Column(db.String(32), nullable=False)
+    salt = db.Column(db.String(32), nullable=False)  # Kept for backward compatibility
     role = db.Column(db.String(20), nullable=False, default='user')
     email = db.Column(db.String(100), unique=True)
     phone = db.Column(db.String(20))
@@ -15,6 +16,22 @@ class User(db.Model):
     last_login = db.Column(db.DateTime)
     status = db.Column(db.Integer, default=1)
     events = db.relationship('Event', backref='reporter', lazy='dynamic')
+
+    def set_password(self, password: str) -> None:
+        """Hash and set user password using bcrypt."""
+        password_bytes = password.encode('utf-8')
+        salt = bcrypt.gensalt()
+        hashed = bcrypt.hashpw(password_bytes, salt)
+        self.password_hash = hashed.decode('utf-8')
+        self.salt = salt.decode('utf-8')  # Store salt separately for reference
+
+    def check_password(self, password: str) -> bool:
+        """Verify password against stored hash."""
+        if not self.password_hash:
+            return False
+        password_bytes = password.encode('utf-8')
+        hash_bytes = self.password_hash.encode('utf-8')
+        return bcrypt.checkpw(password_bytes, hash_bytes)
 
 class Road(db.Model):
     __tablename__ = 'roads'
@@ -35,6 +52,15 @@ class Road(db.Model):
 
 class TrafficData(db.Model):
     __tablename__ = 'traffic_data'
+    __table_args__ = (
+        # Composite index for common queries (road + time range)
+        db.Index('idx_road_timestamp', 'road_id', 'timestamp'),
+        # Index for status-based queries
+        db.Index('idx_status_timestamp', 'status', 'timestamp'),
+        # Index for congestion analysis
+        db.Index('idx_congestion_timestamp', 'congestion_level', 'timestamp'),
+    )
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     road_id = db.Column(db.Integer, db.ForeignKey('roads.id'), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, index=True, default=lambda: datetime.now(timezone.utc))
@@ -45,6 +71,15 @@ class TrafficData(db.Model):
 
 class Event(db.Model):
     __tablename__ = 'events'
+    __table_args__ = (
+        # Composite index for event queries by road and time
+        db.Index('idx_event_road_timestamp', 'road_id', 'timestamp'),
+        # Index for active events filtering
+        db.Index('idx_event_status_timestamp', 'status', 'timestamp'),
+        # Index for severity-based queries
+        db.Index('idx_event_severity', 'severity', 'timestamp'),
+    )
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     road_id = db.Column(db.Integer, db.ForeignKey('roads.id'))

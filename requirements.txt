@@ -3,3 +3,31 @@ Flask-SQLAlchemy
 SQLAlchemy
 Faker
 GeoAlchemy2
+
+# Security & Authentication (P0)
+bcrypt
+marshmallow
+python-dotenv
+
+# Caching (P1)
+Flask-Caching
+redis
+
+# Testing (P1)
+pytest
+pytest-cov
+pytest-flask
+
+# Real-time features (P2)
+Flask-SocketIO
+python-socketio
+
+# Data export (P2)
+pandas
+openpyxl
+xlsxwriter
+
+# Code quality
+black
+flake8
+mypy

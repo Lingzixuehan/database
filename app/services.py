@@ -9,7 +9,7 @@ from typing import Dict, List, Optional, Tuple
 
 from sqlalchemy import func
 
-from . import db
+from . import db, cache
 from .models import Event, Road, TrafficData, User
 
 
@@ -50,7 +50,9 @@ def _parse_point_wkt(wkt: Optional[str]) -> Optional[Dict[str, float]]:
         return None
 
 
+@cache.cached(timeout=300, key_prefix='all_roads')
 def get_all_roads() -> List[Dict]:
+    """Get all roads (cached for 5 minutes)."""
     roads = Road.query.order_by(Road.name.asc()).all()
     return [
         {
@@ -70,25 +72,46 @@ def get_road_by_id(road_id: int) -> Optional[Road]:
     return db.session.get(Road, road_id)
 
 
-def get_latest_traffic(limit: int = 10) -> List[Dict]:
+def get_latest_traffic(limit: int = 10, offset: int = 0) -> Dict:
+    """Get latest traffic data with pagination support."""
+    total = TrafficData.query.count()
+
     rows = (
         TrafficData.query.order_by(TrafficData.timestamp.desc())
         .limit(limit)
+        .offset(offset)
         .all()
     )
-    return [_serialize_traffic_row(row) for row in rows]
+
+    return {
+        'data': [_serialize_traffic_row(row) for row in rows],
+        'total': total,
+        'limit': limit,
+        'offset': offset
+    }
 
 
 def get_events(
-    limit: Optional[int] = None, status: Optional[str] = "active"
-) -> List[Dict]:
+    limit: Optional[int] = None, status: Optional[str] = "active", offset: int = 0
+) -> Dict:
+    """Get events with pagination support."""
     query = Event.query.order_by(Event.timestamp.desc())
     if status and status != "all":
         query = query.filter_by(status=status)
+
+    total = query.count()
+
     if limit:
-        query = query.limit(limit)
+        query = query.limit(limit).offset(offset)
+
     rows = query.all()
-    return [_serialize_event_row(row) for row in rows]
+
+    return {
+        'data': [_serialize_event_row(row) for row in rows],
+        'total': total,
+        'limit': limit or total,
+        'offset': offset
+    }
 
 
 def _serialize_traffic_row(row: TrafficData) -> Dict:
@@ -154,7 +177,9 @@ def get_traffic_history(
     )
 
 
+@cache.cached(timeout=60, key_prefix='dashboard_summary')
 def build_dashboard_summary(window_hours: int = 1) -> Dict:
+    """Build dashboard summary (cached for 1 minute)."""
     now = datetime.now(timezone.utc)
     window_start = now - timedelta(hours=window_hours)
 
