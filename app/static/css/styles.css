@@ -1,0 +1,145 @@
+:root {
+    --surface: #ffffff;
+    --text-muted: #6c757d;
+    --border-color: #e5e7eb;
+    --accent: #1d72b8;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: #f4f6fb;
+    color: #1b1f24;
+}
+
+.hero-card {
+    background: linear-gradient(135deg, #1d72b8 0%, #5c9ce5 100%);
+    color: #fff;
+    border: none;
+}
+
+.hero-card h1 {
+    font-weight: 600;
+}
+
+.stats-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgba(91, 109, 145, 0.12);
+}
+
+.stats-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(29, 114, 184, 0.12);
+    color: #1d72b8;
+    font-size: 1.25rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.card {
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.85rem 0.85rem;
+}
+
+.event-badge {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.timeline li {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.timeline li:last-child {
+    border-bottom: none;
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    margin-top: 0.4rem;
+}
+
+.muted {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.history-placeholder {
+    margin-top: 0.75rem;
+}
+
+.road-stat {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.4rem 0;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+    font-size: 0.95rem;
+}
+
+.road-stat:last-child {
+    border-bottom: none;
+}
+
+.alert-card {
+    border-radius: 0.75rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.alert-card.critical {
+    border-color: rgba(220, 53, 69, 0.2);
+    background: #fff5f5;
+}
+
+.alert-card.warning {
+    border-color: rgba(255, 193, 7, 0.3);
+    background: #fff8e6;
+}
+
+.map-container {
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.list-group-item {
+    border: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.form-card {
+    max-width: 720px;
+    margin: 0 auto;
+}
